@@ -506,6 +506,18 @@ export function injected(parameters: InjectedParameters = {}) {
     },
     onChainChanged(chain) {
       const chainId = Number(chain)
+      if (this.id === 'io.metamask')
+        this.getProvider()
+          .then((provider) =>
+            provider
+              ?.request({
+                method: 'wallet_switchEthereumChain',
+                params: [{ chainId: numberToHex(chainId) }],
+              })
+              .then(() => {})
+              .catch(() => {}),
+          )
+          .catch(() => {})
       config.emitter.emit('change', { chainId })
     },
     async onConnect(connectInfo) {
